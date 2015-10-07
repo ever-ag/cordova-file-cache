@@ -285,22 +285,34 @@ var CordovaFileCache =
 	/**
 	 * Helper to transform remote URL to a local path (for cordova-promise-fs)
 	 */
-	FileCache.prototype.toPath = function toPath(url){
-	  if(this._mirrorMode) {
-	    var query = url.indexOf('?');
-	    if(query > -1){
-	      url = url.substr(0,query);
-	    }
-	    url = url = this._fs.normalize(url || '');
-	    len = this.serverRoot.length;
-	    if(url.substr(0,len) !== this.serverRoot) {
-	      return this.localRoot + url;
-	    } else {
-	      return this.localRoot + url.substr(len);
-	    }
-	  } else {
-	    return this.localRoot + hash(url) + url.substr(url.lastIndexOf('.'));
-	  }
+	FileCache.prototype.toPath = function toPath( url ) {
+		if ( this._mirrorMode ) {
+			var query = url.indexOf( '?' );
+			if ( query > -1 ) {
+			  url = url.substr( 0, query );
+			}
+			url = url = this._fs.normalize( url || '' );
+			len = this.serverRoot.length;
+			if ( url.substr( 0, len ) !== this.serverRoot ) {
+			  return this.localRoot + url;
+			} else {
+			  return this.localRoot + url.substr( len );
+			}
+		} else {
+			var ext;
+			if ( url.indexOf( '.pdf' ) !== -1 ) {
+			  ext = '.pdf';
+			} else if ( url.indexOf( '.png' ) !== -1 ) {
+			  ext = '.png';
+			} else if ( url.indexOf( '.jpg' ) !== -1 ) {
+			  ext = '.jpg';
+			} else if ( url.indexOf( '.jpeg' ) !== -1 ) {
+			  ext = '.jpeg';
+			} else {
+			  ext = url.lastIndexOf( '.' );
+			}
+			return this.localRoot + hash( url ) + ext;
+		}
 	};
 
 	module.exports = FileCache;
